@@ -1,13 +1,12 @@
 ﻿using Grpc.Net.Client;
-using SimpleGrpcService;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GodvilleClient
 {
-    public partial class Form1 : Form
+    public partial class StartForm : Form
     {
-        public Form1()
+        public StartForm()
         {
             InitializeComponent();
             InitAsync();
@@ -16,7 +15,7 @@ namespace GodvilleClient
 
         async Task InitAsync()
         {
-            using var channel = GrpcChannel.ForAddress("https://localhost:5001");
+            using var channel = GrpcChannel.ForAddress("http://localhost:8888");
             var client = new Greeter.GreeterClient(channel);
             string name = "dhbdt";
             var reply = await client.SayHelloAsync(new HelloRequest { Name = name });

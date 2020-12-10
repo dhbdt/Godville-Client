@@ -1,7 +1,7 @@
 ﻿
 namespace GodvilleClient
 {
-    partial class Form1
+    partial class StartForm
     {
         /// <summary>
         ///  Required designer variable.

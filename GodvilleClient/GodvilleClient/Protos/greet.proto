@@ -1,7 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "SimpleGrpcService";
-
+option csharp_namespace = "GodvilleClient";
 package greet;
 
 // The greeting service definition.
