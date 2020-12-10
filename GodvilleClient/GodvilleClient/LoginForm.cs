@@ -17,6 +17,8 @@ namespace GodvilleClient
         {
             InitializeComponent();
             this.loginData = loginData;
+            txtLogin.Text = loginData.Login;
+            txtPassword.Text = loginData.Password;
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -27,12 +29,12 @@ namespace GodvilleClient
 
         private void awayLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Close();
+            DialogResult = DialogResult.Cancel;
         }
 
         private void registerLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-
+            DialogResult = DialogResult.Ignore;
         }
     }
 }
