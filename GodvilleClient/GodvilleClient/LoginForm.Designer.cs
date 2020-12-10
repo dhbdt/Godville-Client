@@ -63,6 +63,7 @@ namespace GodvilleClient
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(251, 34);
             this.txtPassword.TabIndex = 2;
+            this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
             // 
             // txtLogin
             // 
@@ -70,6 +71,7 @@ namespace GodvilleClient
             this.txtLogin.Name = "txtLogin";
             this.txtLogin.Size = new System.Drawing.Size(251, 34);
             this.txtLogin.TabIndex = 3;
+            this.txtLogin.TextChanged += new System.EventHandler(this.txtLogin_TextChanged);
             // 
             // awayLink
             // 

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GodvilleClient
@@ -19,12 +12,18 @@ namespace GodvilleClient
             this.loginData = loginData;
             txtLogin.Text = loginData.Login;
             txtPassword.Text = loginData.Password;
+            btnOk.Enabled = OpenOkBtn();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
             loginData.Login = txtLogin.Text;
             loginData.Password = txtPassword.Text;
+        }
+
+        bool OpenOkBtn()
+        {
+            return !string.IsNullOrEmpty(txtLogin.Text) && !string.IsNullOrEmpty(txtPassword.Text);
         }
 
         private void awayLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -35,6 +34,16 @@ namespace GodvilleClient
         private void registerLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             DialogResult = DialogResult.Ignore;
+        }
+
+        private void txtLogin_TextChanged(object sender, EventArgs e)
+        {
+            btnOk.Enabled = OpenOkBtn();
+        }
+
+        private void txtPassword_TextChanged(object sender, EventArgs e)
+        {
+            btnOk.Enabled = OpenOkBtn();
         }
     }
 }
