@@ -35,6 +35,7 @@ namespace GodvilleClient
             this.txtLogin = new System.Windows.Forms.TextBox();
             this.awayLink = new System.Windows.Forms.LinkLabel();
             this.btnOk = new System.Windows.Forms.Button();
+            this.registerLink = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // label1
@@ -83,18 +84,32 @@ namespace GodvilleClient
             // 
             // btnOk
             // 
+            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOk.Location = new System.Drawing.Point(176, 145);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(126, 42);
             this.btnOk.TabIndex = 5;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+            // 
+            // registerLink
+            // 
+            this.registerLink.AutoSize = true;
+            this.registerLink.Font = new System.Drawing.Font("Trebuchet MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.registerLink.Location = new System.Drawing.Point(37, 210);
+            this.registerLink.Name = "registerLink";
+            this.registerLink.Size = new System.Drawing.Size(194, 20);
+            this.registerLink.TabIndex = 6;
+            this.registerLink.TabStop = true;
+            this.registerLink.Text = "Я еше не зарегистрирован";
             // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 28F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(456, 243);
+            this.ClientSize = new System.Drawing.Size(456, 248);
+            this.Controls.Add(this.registerLink);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.awayLink);
             this.Controls.Add(this.txtLogin);
@@ -121,5 +136,6 @@ namespace GodvilleClient
         private System.Windows.Forms.TextBox txtLogin;
         private System.Windows.Forms.LinkLabel awayLink;
         private System.Windows.Forms.Button btnOk;
+        private System.Windows.Forms.LinkLabel registerLink;
     }
 }

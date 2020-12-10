@@ -12,9 +12,17 @@ namespace GodvilleClient
 {
     public partial class LoginForm : Form
     {
-        public LoginForm()
+        Model.LoginData loginData;
+        public LoginForm(Model.LoginData loginData)
         {
             InitializeComponent();
+            this.loginData = loginData;
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            loginData.Login = txtLogin.Text;
+            loginData.Password = txtPassword.Text;
         }
     }
 }
