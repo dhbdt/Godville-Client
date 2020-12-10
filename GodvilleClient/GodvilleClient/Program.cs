@@ -30,11 +30,9 @@ namespace GodvilleClient
                 if (result == DialogResult.OK)
                 {
                     // найти живых и выбрать среди них случайного диспетчера 
-                    // отправить данные диспетчеру и получить ссылку на сервер
                     using var channel = GrpcChannel.ForAddress(Model.Config.DispatcherList[0]);
                     var client = new GodvilleServiceClient(channel);
                     string serverIp = client.Login(new LoginData { Login = loginData.Login, Password = loginData.Password }).Ip;
-                    MessageBox.Show(serverIp);
                     // создать сокет, который слушает этот ip
                     // получить от сервера через сокет свой id, если все успешно (внутри реализовать "дай мне другой сервер, если этот не отвечает")
                     // if (myId == -1)
@@ -47,10 +45,14 @@ namespace GodvilleClient
                     RegisterForm rf = new RegisterForm(regData);
                     if (rf.ShowDialog() == DialogResult.OK)
                     {
-                        // у нас есть рег данные
                         // найти живых и выбрать среди них случайного диспетчера 
-                        // отправить данные диспетчеру и получить ссылку на сервер
-                        // string serverIp = Register(regData);
+                        using var channel = GrpcChannel.ForAddress(Model.Config.DispatcherList[0]);
+                        var client = new GodvilleServiceClient(channel);
+                        string serverIp = client.Register(
+                            new RegisterData { 
+                                LoginData = new LoginData { Login = regData.Login, Password = regData.Password }, 
+                                Nickname = regData.Nickname
+                            }).Ip;
                         // создать сокет, который слушает этот ip
                         // получить от сервера через сокет свой id, если все успешно (внутри реализовать "дай мне другой сервер, если этот не отвечает")
                     }
