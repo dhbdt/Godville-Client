@@ -3,18 +3,21 @@ syntax = "proto3";
 option csharp_namespace = "GodvilleClient";
 package greet;
 
-// The greeting service definition.
-service Greeter {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply);
+service GodvilleService {
+  rpc Login(LoginData) returns (ServerAddress);
+  rpc Register(RegisterData) returns (ServerAddress);
 }
 
-// The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
+message LoginData {
+  string login = 1;
+  string password = 2;
 }
 
-// The response message containing the greetings.
-message HelloReply {
-  string message = 1;
+message RegisterData {
+  LoginData loginData = 1;
+  string nickname = 2;
+}
+
+message ServerAddress {
+	string ip = 1;
 }
