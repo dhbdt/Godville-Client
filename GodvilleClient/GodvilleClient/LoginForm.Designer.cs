@@ -81,6 +81,7 @@ namespace GodvilleClient
             this.awayLink.TabIndex = 4;
             this.awayLink.TabStop = true;
             this.awayLink.Text = "Ой, отстаньте от меня";
+            this.awayLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.awayLink_LinkClicked);
             // 
             // btnOk
             // 
@@ -103,6 +104,7 @@ namespace GodvilleClient
             this.registerLink.TabIndex = 6;
             this.registerLink.TabStop = true;
             this.registerLink.Text = "Я еше не зарегистрирован";
+            this.registerLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.registerLink_LinkClicked);
             // 
             // LoginForm
             // 

@@ -24,5 +24,15 @@ namespace GodvilleClient
             loginData.Login = txtLogin.Text;
             loginData.Password = txtPassword.Text;
         }
+
+        private void awayLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Close();
+        }
+
+        private void registerLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+
+        }
     }
 }

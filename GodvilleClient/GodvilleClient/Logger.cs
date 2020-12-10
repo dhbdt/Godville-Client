@@ -9,11 +9,12 @@ namespace GodvilleClient
 {
     class Logger
     {
-        static StreamWriter streamWriter = new StreamWriter(Model.Config.ErrorOutputFilePath);
-
         public static void AddErrorMessage(string message)
         {
-            streamWriter.WriteLine(message);
+            using (StreamWriter streamWriter = File.AppendText(Model.Config.ErrorOutputFilePath))
+            {
+                streamWriter.WriteLine(TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString() + "\t" + message);
+            }
         }
     }
 }
