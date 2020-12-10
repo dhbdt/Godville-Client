@@ -10,7 +10,6 @@ namespace GodvilleClient
         {
             InitializeComponent();
             InitAsync();
-
         }
 
         async Task InitAsync()

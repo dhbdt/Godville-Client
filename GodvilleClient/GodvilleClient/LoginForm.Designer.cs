@@ -33,6 +33,8 @@ namespace GodvilleClient
             this.label2 = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.txtLogin = new System.Windows.Forms.TextBox();
+            this.awayLink = new System.Windows.Forms.LinkLabel();
+            this.btnOk = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -68,11 +70,33 @@ namespace GodvilleClient
             this.txtLogin.Size = new System.Drawing.Size(251, 34);
             this.txtLogin.TabIndex = 3;
             // 
+            // awayLink
+            // 
+            this.awayLink.AutoSize = true;
+            this.awayLink.Font = new System.Drawing.Font("Trebuchet MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.awayLink.Location = new System.Drawing.Point(261, 210);
+            this.awayLink.Name = "awayLink";
+            this.awayLink.Size = new System.Drawing.Size(166, 20);
+            this.awayLink.TabIndex = 4;
+            this.awayLink.TabStop = true;
+            this.awayLink.Text = "Ой, отстаньте от меня";
+            // 
+            // btnOk
+            // 
+            this.btnOk.Location = new System.Drawing.Point(176, 145);
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Size = new System.Drawing.Size(126, 42);
+            this.btnOk.TabIndex = 5;
+            this.btnOk.Text = "OK";
+            this.btnOk.UseVisualStyleBackColor = true;
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 28F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(456, 450);
+            this.ClientSize = new System.Drawing.Size(456, 243);
+            this.Controls.Add(this.btnOk);
+            this.Controls.Add(this.awayLink);
             this.Controls.Add(this.txtLogin);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.label2);
@@ -95,5 +119,7 @@ namespace GodvilleClient
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.TextBox txtLogin;
+        private System.Windows.Forms.LinkLabel awayLink;
+        private System.Windows.Forms.Button btnOk;
     }
 }
