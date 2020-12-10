@@ -82,6 +82,7 @@ namespace GodvilleClient
             this.txtNickname.Name = "txtNickname";
             this.txtNickname.Size = new System.Drawing.Size(438, 34);
             this.txtNickname.TabIndex = 4;
+            this.txtNickname.TextChanged += new System.EventHandler(this.txtNickname_TextChanged);
             // 
             // txtLogin
             // 
@@ -89,6 +90,7 @@ namespace GodvilleClient
             this.txtLogin.Name = "txtLogin";
             this.txtLogin.Size = new System.Drawing.Size(438, 34);
             this.txtLogin.TabIndex = 5;
+            this.txtLogin.TextChanged += new System.EventHandler(this.txtLogin_TextChanged);
             // 
             // txtPassword
             // 
@@ -97,6 +99,7 @@ namespace GodvilleClient
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(438, 34);
             this.txtPassword.TabIndex = 6;
+            this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
             // 
             // txtPasswordCheck
             // 
@@ -105,6 +108,7 @@ namespace GodvilleClient
             this.txtPasswordCheck.PasswordChar = '*';
             this.txtPasswordCheck.Size = new System.Drawing.Size(438, 34);
             this.txtPasswordCheck.TabIndex = 7;
+            this.txtPasswordCheck.TextChanged += new System.EventHandler(this.txtPasswordCheck_TextChanged);
             // 
             // btnOk
             // 
