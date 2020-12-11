@@ -17,7 +17,6 @@ namespace GodvilleClient
     {
 
         static readonly string ip = GetLocalIPAddress();
-        //static readonly string ip = GetIPAddress();
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -28,7 +27,6 @@ namespace GodvilleClient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            MessageBox.Show(GetIPAddress());
             int myId = TryGetMyId(Model.Config.MyIdFilePath);
             Model.LoginData loginData = new Model.LoginData();
             if (myId == -1)
@@ -40,6 +38,7 @@ namespace GodvilleClient
                     // найти живых и выбрать среди них случайного диспетчера 
                     
                     using var channel = GrpcChannel.ForAddress("http://192.168.100.6:5000");
+
                     var client = new GodvilleServiceClient(channel);
                     try
                     {
@@ -108,23 +107,6 @@ namespace GodvilleClient
             }
             return myId;
         }
-        static string GetIPAddress()
-        {
-            string address = "";
-            WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
-            using (WebResponse response = request.GetResponse())
-            using (StreamReader stream = new StreamReader(response.GetResponseStream()))
-            {
-                address = stream.ReadToEnd();
-            }
-
-            int first = address.IndexOf("Address: ") + 9;
-            int last = address.LastIndexOf("</body>");
-            address = address.Substring(first, last - first);
-
-            return address;
-        }
-
         public static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
