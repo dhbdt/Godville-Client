@@ -70,7 +70,7 @@ namespace GodvilleClient
             this.txtLogin.Location = new System.Drawing.Point(138, 19);
             this.txtLogin.Name = "txtLogin";
             this.txtLogin.Size = new System.Drawing.Size(251, 34);
-            this.txtLogin.TabIndex = 3;
+            this.txtLogin.TabIndex = 1;
             this.txtLogin.TextChanged += new System.EventHandler(this.txtLogin_TextChanged);
             // 
             // awayLink
@@ -80,7 +80,7 @@ namespace GodvilleClient
             this.awayLink.Location = new System.Drawing.Point(261, 210);
             this.awayLink.Name = "awayLink";
             this.awayLink.Size = new System.Drawing.Size(166, 20);
-            this.awayLink.TabIndex = 4;
+            this.awayLink.TabIndex = 5;
             this.awayLink.TabStop = true;
             this.awayLink.Text = "Ой, отстаньте от меня";
             this.awayLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.awayLink_LinkClicked);
@@ -91,7 +91,7 @@ namespace GodvilleClient
             this.btnOk.Location = new System.Drawing.Point(176, 145);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(126, 42);
-            this.btnOk.TabIndex = 5;
+            this.btnOk.TabIndex = 3;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
@@ -103,7 +103,7 @@ namespace GodvilleClient
             this.registerLink.Location = new System.Drawing.Point(37, 210);
             this.registerLink.Name = "registerLink";
             this.registerLink.Size = new System.Drawing.Size(194, 20);
-            this.registerLink.TabIndex = 6;
+            this.registerLink.TabIndex = 4;
             this.registerLink.TabStop = true;
             this.registerLink.Text = "Я еше не зарегистрирован";
             this.registerLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.registerLink_LinkClicked);
