@@ -16,6 +16,7 @@ namespace GodvilleClient
     static class Program
     {
         static readonly string ip = GetLocalIPAddress();
+        public static Model.ClientData Client { get; set; } = new Model.ClientData();
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -26,21 +27,20 @@ namespace GodvilleClient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            int myId = MyId.TryGetMyId();
+            Client.TryGetClient();
             Model.LoginData loginData = new Model.LoginData();
-            while (myId == -1)
+            while (Client.Id == -1)
             {
                 LoginForm loginForm = new LoginForm(loginData);
                 DialogResult result = loginForm.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    // найти живых и выбрать среди них случайного диспетчера 
-                    using var channel = GrpcChannel.ForAddress(Model.Config.DispatcherList[0]);
-                    var client = new GodvilleServiceClient(channel);
+                    using var channel = Connection.GetDispatcherChannel();
+                    var serviceClient = new GodvilleServiceClient(channel);
                     string serverIp;
                     try
                     {
-                        serverIp = client.Login(
+                        serverIp = serviceClient.Login(
                             new LoginData
                             {
                                 Login = loginData.Login,
@@ -53,11 +53,11 @@ namespace GodvilleClient
                         Logger.AddErrorMessage(e.Message);
                         return;
                     }
-                    myId = ConnectServerCheckMyId(serverIp);
-                    if (myId == -1)
+                    Client.Id = ConnectServerCheckMyId(serverIp);
+                    if (Client.Id == -1)
                         MessageBox.Show("Неверное имя пользователя или пароль");
                     else
-                        MyId.SetMyId(myId);
+                        Client.SetMyId();
                 }
                 else if (result == DialogResult.Ignore)
                 {
@@ -65,14 +65,13 @@ namespace GodvilleClient
                     RegisterForm rf = new RegisterForm(regData);
                     if (rf.ShowDialog() == DialogResult.OK)
                     {
-                        // найти живых и выбрать среди них случайного диспетчера 
-                        using var channel = GrpcChannel.ForAddress(Model.Config.DispatcherList[0]);
-                        var client = new GodvilleServiceClient(channel);
+                        using var channel = Connection.GetDispatcherChannel();
+                        var serviceClient = new GodvilleServiceClient(channel);
 
                         string serverIp;
                         try
                         {
-                            serverIp = client.Register(
+                            serverIp = serviceClient.Register(
                                 new RegisterData
                                 {
                                     LoginData = new LoginData { Login = regData.Login, Password = regData.Password, ClientIp = ip },
@@ -83,7 +82,7 @@ namespace GodvilleClient
                             Logger.AddErrorMessage(e.Message);
                             return;
                         }
-                        myId = ConnectServerCheckMyId(serverIp);
+                        Client.Id = ConnectServerCheckMyId(serverIp);
                     }
                     else
                         return;

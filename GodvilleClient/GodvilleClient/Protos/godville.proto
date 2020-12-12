@@ -6,6 +6,8 @@ package greet;
 service GodvilleService {
   rpc Login(LoginData) returns (ServerAddress);
   rpc Register(RegisterData) returns (ServerAddress);
+  rpc Logout(ClientId) returns (Empty);
+  rpc StartDuel(ClientData) returns (ServerAddress);
 }
 
 message LoginData {
@@ -23,3 +25,15 @@ message RegisterData {
 message ServerAddress {
 	string ip = 1;
 }
+
+message ClientId {
+	int64 id = 1;
+}
+
+message ClientData {
+	int64 id = 1;
+	string nickname = 2;
+	int64 healthCount = 3;
+}
+
+message Empty {}

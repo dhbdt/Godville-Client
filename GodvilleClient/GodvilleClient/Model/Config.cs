@@ -11,6 +11,6 @@ namespace GodvilleClient.Model
         public static string dateTimeNow = TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString().Replace(":", ".");
         public static string ErrorOutputFilePath { get; set; } = "log " + dateTimeNow +".txt";
         public static string MyIdFilePath { get; set; } = "myid.txt";
-        public static List<string> DispatcherList { get; set; } = new List<string>() { "" };
+        public static List<string> DispatcherList { get; set; } = new List<string>() { "http://192.168.100.6:5000" };
     }
 }
