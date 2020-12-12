@@ -90,6 +90,7 @@ namespace GodvilleClient
                     else
                         return;
                 }
+                // завершение работы
                 else if (result == DialogResult.Cancel)
                     return;
             }
@@ -121,13 +122,7 @@ namespace GodvilleClient
                         using (StreamReader sr = new StreamReader(networkStream))
                         {
                             string input = sr.ReadLine();
-                            //clientData.Deserialize(input);
-                            //
-                            Client.Id = 546;
-                            Client.Nickname = "alolo";
-                            Client.HeroName = "rose";
-                            Client.CountLives = 100;
-                            //
+                            Client.Deserialize(input);
                         }
                     }
                 }

@@ -8,6 +8,7 @@ service GodvilleService {
   rpc Register(RegisterData) returns (ServerAddress);
   rpc Logout(ClientId) returns (Empty);
   rpc StartDuel(ClientData) returns (ServerAddress);
+  rpc GetStatistics(ClientId) returns (ServerAddress);
 }
 
 message LoginData {

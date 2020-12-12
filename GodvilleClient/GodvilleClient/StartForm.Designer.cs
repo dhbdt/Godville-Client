@@ -45,7 +45,7 @@ namespace GodvilleClient
             this.label3 = new System.Windows.Forms.Label();
             this.lblYourHealth = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.lblTimer = new System.Windows.Forms.Label();
+            this.lblHeroName = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -188,24 +188,24 @@ namespace GodvilleClient
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(88, 185);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(143, 28);
+            this.label5.Size = new System.Drawing.Size(130, 28);
             this.label5.TabIndex = 15;
-            this.label5.Text = "Время хода:";
+            this.label5.Text = "Ваш герой:";
             // 
-            // lblTimer
+            // lblHeroName
             // 
-            this.lblTimer.AutoSize = true;
-            this.lblTimer.Location = new System.Drawing.Point(237, 185);
-            this.lblTimer.Name = "lblTimer";
-            this.lblTimer.Size = new System.Drawing.Size(0, 28);
-            this.lblTimer.TabIndex = 16;
+            this.lblHeroName.AutoSize = true;
+            this.lblHeroName.Location = new System.Drawing.Point(237, 185);
+            this.lblHeroName.Name = "lblHeroName";
+            this.lblHeroName.Size = new System.Drawing.Size(0, 28);
+            this.lblHeroName.TabIndex = 16;
             // 
             // StartForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 28F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 740);
-            this.Controls.Add(this.lblTimer);
+            this.Controls.Add(this.lblHeroName);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.lblYourHealth);
             this.Controls.Add(this.label3);
@@ -224,6 +224,7 @@ namespace GodvilleClient
             this.Font = new System.Drawing.Font("Trebuchet MS", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Name = "StartForm";
             this.Text = "Добро пожаловать в Godville!";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StartForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -246,6 +247,6 @@ namespace GodvilleClient
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblYourHealth;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label lblTimer;
+        private System.Windows.Forms.Label lblHeroName;
     }
 }
