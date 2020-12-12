@@ -16,7 +16,8 @@ namespace GodvilleClient.Model
         public int Id { get; set; }
         public string Nickname { get; set; }
         public int CountLives { get; set; }
-        DataContractJsonSerializer formatter;
+        public string HeroName { get; set; }
+
         public ClientData()
         {
             Id = -1;
@@ -28,10 +29,7 @@ namespace GodvilleClient.Model
                 using (StreamReader sr = new StreamReader(Config.MyIdFilePath))
                 {
                     string json = sr.ReadLine();
-                    ClientData deserialize = JsonSerializer.Deserialize<ClientData>(json);
-                    Id = deserialize.Id;
-                    Nickname = deserialize.Nickname;
-                    CountLives = deserialize.CountLives;
+                    Deserialize(json);
                 }
             }
             catch (Exception e)
@@ -40,11 +38,20 @@ namespace GodvilleClient.Model
             }
             return;
         }
-        public void SetMyId()
+
+        public void Deserialize(string json)
+        {
+            ClientData deserialize = JsonSerializer.Deserialize<ClientData>(json);
+            Id = deserialize.Id;
+            Nickname = deserialize.Nickname;
+            CountLives = deserialize.CountLives;
+            HeroName = deserialize.HeroName;
+        }
+        public void SetClientData()
         {
             try
             {
-                string json = JsonSerializer.Serialize<ClientData>(this);
+                string json = JsonSerializer.Serialize(this);
                 File.WriteAllText(Model.Config.MyIdFilePath, json);
             } catch(Exception e)
             {

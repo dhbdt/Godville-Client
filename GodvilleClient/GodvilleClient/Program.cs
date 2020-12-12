@@ -33,6 +33,7 @@ namespace GodvilleClient
             {
                 LoginForm loginForm = new LoginForm(loginData);
                 DialogResult result = loginForm.ShowDialog();
+                // логин
                 if (result == DialogResult.OK)
                 {
                     using var channel = Connection.GetDispatcherChannel();
@@ -53,12 +54,13 @@ namespace GodvilleClient
                         Logger.AddErrorMessage(e.Message);
                         return;
                     }
-                    Client.Id = ConnectServerCheckMyId(serverIp);
+                    Client.Id = ConnectServerGetClientData(serverIp);
                     if (Client.Id == -1)
                         MessageBox.Show("Неверное имя пользователя или пароль");
                     else
-                        Client.SetMyId();
+                        Client.SetClientData();
                 }
+                // регистрация
                 else if (result == DialogResult.Ignore)
                 {
                     Model.RegisterData regData = new Model.RegisterData();
@@ -82,7 +84,8 @@ namespace GodvilleClient
                             Logger.AddErrorMessage(e.Message);
                             return;
                         }
-                        Client.Id = ConnectServerCheckMyId(serverIp);
+                        Client.Id = ConnectServerGetClientData(serverIp);
+                        Client.SetClientData();
                     }
                     else
                         return;
@@ -106,9 +109,8 @@ namespace GodvilleClient
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
-        static int ConnectServerCheckMyId(string serverAddres)
+        static int ConnectServerGetClientData(string serverAddres)
         {
-            int myId = -1;
             var lines = serverAddres.Split(":");
             try
             {
@@ -119,7 +121,13 @@ namespace GodvilleClient
                         using (StreamReader sr = new StreamReader(networkStream))
                         {
                             string input = sr.ReadLine();
-                            myId = int.Parse(input);
+                            //clientData.Deserialize(input);
+                            //
+                            Client.Id = 546;
+                            Client.Nickname = "alolo";
+                            Client.HeroName = "rose";
+                            Client.CountLives = 100;
+                            //
                         }
                     }
                 }
@@ -127,7 +135,7 @@ namespace GodvilleClient
             {
                 Logger.AddErrorMessage(e.Message);
             }
-            return myId;
+            return Client.Id;
         }
     }
 }

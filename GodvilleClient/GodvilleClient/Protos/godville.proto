@@ -34,6 +34,7 @@ message ClientData {
 	int64 id = 1;
 	string nickname = 2;
 	int64 healthCount = 3;
+	string heroName = 4;
 }
 
 message Empty {}
