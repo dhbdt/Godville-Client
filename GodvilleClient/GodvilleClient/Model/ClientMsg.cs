@@ -46,7 +46,7 @@ namespace GodvilleClient.Model
          * @param lives колво жизней игрока
          * @param enemyLives колво жизней противника
          */
-        public ClientMsg(String hiPhrase, int lives, int enemyLives, bool isEven)
+        public ClientMsg(string hiPhrase, int lives, int enemyLives, bool isEven)
         {
             Type = 4;
             HodNum = 0;
