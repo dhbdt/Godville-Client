@@ -14,7 +14,7 @@ namespace GodvilleClient.Model
 
         // номер хода (считает сервер)
         public int HodNum { get; set; }
-        public int IdClient { get; set; }
+        public string EnemyName { get; set; }
 
         // фраза о том, кто одержал победу или фраза о начале дуэли или фраза хода
         public string Phrase { get; set; }
@@ -79,7 +79,7 @@ namespace GodvilleClient.Model
         {
             Type = -1;
             HodNum = -1;
-            IdClient = -1;
+            EnemyName = "";
             Phrase = "";
             Glas = -1;
             Lives = -1;

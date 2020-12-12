@@ -1,6 +1,7 @@
 ﻿using Grpc.Net.Client;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -10,14 +11,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static GodvilleClient.GodvilleService;
+using static System.Windows.Forms.ListView;
 
 namespace GodvilleClient
 {
     public partial class StartForm : Form
     {
         NetworkStream networkStreamWrite;
-        readonly List<string> phraseList = new List<string>();
-
         public StartForm()
         {
             InitializeComponent();
@@ -56,7 +56,7 @@ namespace GodvilleClient
                 return;
             }
         }
-        readonly Model.ClientMsg clientMsg = new Model.ClientMsg();
+
         void ReadClientMsg()
         {
             //GrpcChannel channel = Connection.GetDispatcherChannel();
@@ -86,12 +86,29 @@ namespace GodvilleClient
                     {
                         MessageBox.Show(input);
                         //Model.ClientMsg clientMsg = JsonSerializer.Deserialize<Model.ClientMsg>(input);
+                        Model.ClientMsg clientMsg = new Model.ClientMsg();
                         clientMsg.Type = 4;
-                        clientMsg.Phrase= "hello";
+                        clientMsg.Phrase = "hello";
                         if (clientMsg.Type == 4)
                         {
-                            lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, "hugi");
+                            lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, clientMsg.EnemyName);
                         }
+                        if (clientMsg.Glas != -1)
+                        {
+                            string glasMsg = clientMsg.Glas == 0 ?
+                                "Противник сделал плохо. Ваше здоровье уменьшилось" :
+                                "Противник сделал хорошо. Его герой вылечился";
+                            TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Add(glasMsg));
+                            TestFormControlHelper.ControlInvoke(
+                                lvDuelHistory,
+                                () => lvDuelHistory.Items[lvDuelHistory.Items.Count - 1].BackColor = Color.Cyan);
+                        }
+                        btnGood.SetPropertyThreadSafe(() => btnGood.Enabled, clientMsg.IsEven);
+                        btnBad.SetPropertyThreadSafe(() => btnBad.Enabled, clientMsg.IsEven);
+
+                        TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Add(clientMsg.Phrase));
+                        lblEnemyHealth.SetPropertyThreadSafe(() => lblEnemyHealth.Text, clientMsg.EnemyLives.ToString());
+                        lblYourHealth.SetPropertyThreadSafe(() => lblYourHealth.Text, clientMsg.Lives.ToString());
                     }
                 }
             }

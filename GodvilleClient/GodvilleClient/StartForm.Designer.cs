@@ -40,8 +40,8 @@ namespace GodvilleClient
             this.linkLogout = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.lblEnemyName = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.lblEnemyHealth = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lblYourHealth = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -67,6 +67,7 @@ namespace GodvilleClient
             this.lvDuelHistory.Size = new System.Drawing.Size(626, 370);
             this.lvDuelHistory.TabIndex = 2;
             this.lvDuelHistory.UseCompatibleStateImageBehavior = false;
+            this.lvDuelHistory.View = System.Windows.Forms.View.List;
             // 
             // btnGood
             // 
@@ -149,22 +150,22 @@ namespace GodvilleClient
             this.lblEnemyName.Size = new System.Drawing.Size(0, 28);
             this.lblEnemyName.TabIndex = 10;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(400, 144);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(249, 28);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "Здоровье противника:";
+            // 
             // lblEnemyHealth
             // 
             this.lblEnemyHealth.AutoSize = true;
-            this.lblEnemyHealth.Location = new System.Drawing.Point(400, 144);
+            this.lblEnemyHealth.Location = new System.Drawing.Point(647, 144);
             this.lblEnemyHealth.Name = "lblEnemyHealth";
-            this.lblEnemyHealth.Size = new System.Drawing.Size(249, 28);
-            this.lblEnemyHealth.TabIndex = 11;
-            this.lblEnemyHealth.Text = "Здоровье противника:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(647, 144);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(0, 28);
-            this.label4.TabIndex = 12;
+            this.lblEnemyHealth.Size = new System.Drawing.Size(0, 28);
+            this.lblEnemyHealth.TabIndex = 12;
             // 
             // label3
             // 
@@ -209,8 +210,8 @@ namespace GodvilleClient
             this.Controls.Add(this.label5);
             this.Controls.Add(this.lblYourHealth);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.lblEnemyHealth);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.lblEnemyName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.linkLogout);
@@ -242,8 +243,8 @@ namespace GodvilleClient
         private System.Windows.Forms.LinkLabel linkLogout;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblEnemyName;
+        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label lblEnemyHealth;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblYourHealth;
         private System.Windows.Forms.Label label5;
