@@ -84,11 +84,10 @@ namespace GodvilleClient
                     input = sr.ReadLine();
                     if (input != null)
                     {
-                        MessageBox.Show(input);
-                        //Model.ClientMsg clientMsg = JsonSerializer.Deserialize<Model.ClientMsg>(input);
-                        Model.ClientMsg clientMsg = new Model.ClientMsg();
-                        clientMsg.Type = 4;
-                        clientMsg.Phrase = "hello";
+                        Model.ClientMsg clientMsg = JsonSerializer.Deserialize<Model.ClientMsg>(input);
+                        //Model.ClientMsg clientMsg = new Model.ClientMsg();
+                        //clientMsg.Type = 4;
+                        //clientMsg.Phrase = "hello";
                         if (clientMsg.Type == 4)
                         {
                             lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, clientMsg.EnemyName);
@@ -135,7 +134,38 @@ namespace GodvilleClient
 
         private void btnGetStat_Click(object sender, EventArgs e)
         {
+            Thread readerThread = new Thread(new ThreadStart(StatisticReader));
+            readerThread.Start();
+        }
 
+        void StatisticReader()
+        {
+            //GrpcChannel channel = Connection.GetDispatcherChannel();
+            //var client = new GodvilleServiceClient(channel);
+            //string serverAddress = client.GetStatistics(new ClientId { Id = Program.Client.Id }).Ip;
+
+            // заглушка
+            string serverAddress = "192.168.100.6:8888";
+            var lines = serverAddress.Split(":");
+
+            int port = int.Parse(lines[1]);
+            using (TcpClient tcpClient = new TcpClient(lines[0], port))
+            {
+                NetworkStream networkStreamRead = tcpClient.GetStream();
+                string input;
+                StreamReader sr = new StreamReader(networkStreamRead);
+
+                input = sr.ReadLine();
+                if (input != null)
+                {
+                    // заполнить данные для StatisticForm
+                }
+            }
+
+            StatisticForm sf = new StatisticForm(
+                new List<string>() { "123", "345" },
+                new List<List<string>>() { new List<string>() { "567", "78" }, new List<string>() { "afv", "bvc", "hjj" } });
+            sf.ShowDialog();
         }
 
         private void linkLogout_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
