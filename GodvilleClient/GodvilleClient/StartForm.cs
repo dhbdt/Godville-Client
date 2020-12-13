@@ -75,12 +75,13 @@ namespace GodvilleClient
             } catch (Exception e)
             {
                 //Выбранный диспетчер вдруг умер после проверки на активность
+                Logger.AddErrorMessage(e.Message);
                 MessageBox.Show("Дуэль не может быть начата");
                 return;
             }
 
             //заглушка
-            string serverAddress = "192.168.100.6:8888";
+            string serverAddress = "192.168.100.6:8024";
             var lines = serverAddress.Split(":");
             var ping = new Ping();
             var reply = ping.Send(lines[0], 3000); // 3 минуты тайм-аут

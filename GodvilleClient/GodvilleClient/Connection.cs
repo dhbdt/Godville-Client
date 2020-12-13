@@ -14,23 +14,25 @@ namespace GodvilleClient
         static readonly List<string> aliveDispatchers = new List<string>();
         public static GrpcChannel GetDispatcherChannel()
         {
-            //Task[] tasks = new Task[Model.Config.DispatcherList.Count];
+            Task[] tasks = new Task[Model.Config.DispatcherList.Count];
             // найти живых и выбрать среди них случайного диспетчера 
             for (int i = 0; i < Model.Config.DispatcherList.Count; i++)
             {
                 //Thread thread = new Thread(() => CheckDispatcherIsAlive(i));
                 //thread.Start();
 
-                //tasks[i] = new Task(() => CheckDispatcherIsAlive(i));
+                tasks[i] = Task.Factory.StartNew(() => CheckDispatcherIsAlive(i));
                 //tasks[i].Start();
 
-                CheckDispatcherIsAlive(i);
+                //CheckDispatcherIsAlive(i);
 
 
             }
-            //Task.WaitAll(tasks);
+            Task.WaitAll(tasks);
+            Random random = new Random();
+            int dispatcher = random.Next(aliveDispatchers.Count - 1);
 
-            return GrpcChannel.ForAddress(Model.Config.DispatcherList[0]);
+            return GrpcChannel.ForAddress(Model.Config.DispatcherList[dispatcher]);
         }
 
         public static void CheckDispatcherIsAlive(int index)
