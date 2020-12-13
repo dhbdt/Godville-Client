@@ -11,44 +11,28 @@ namespace GodvilleClient
 {
     public class Connection
     {
-        static readonly List<string> aliveDispatchers = new List<string>();
         public static GrpcChannel GetDispatcherChannel()
         {
-            Task[] tasks = new Task[Model.Config.DispatcherList.Count];
-            // найти живых и выбрать среди них случайного диспетчера 
-            for (int i = 0; i < Model.Config.DispatcherList.Count; i++)
-            {
-                //Thread thread = new Thread(() => CheckDispatcherIsAlive(i));
-                //thread.Start();
-
-                tasks[i] = Task.Factory.StartNew(() => CheckDispatcherIsAlive(i));
-                //tasks[i].Start();
-
-                //CheckDispatcherIsAlive(i);
-
-
-            }
-            Task.WaitAll(tasks);
-            Random random = new Random();
-            int dispatcher = random.Next(aliveDispatchers.Count - 1);
+            int dispatcher = 0;
+            while (!CheckDispatcherIsAlive(dispatcher) && dispatcher < Model.Config.DispatcherList.Count)
+                dispatcher++;
 
             return GrpcChannel.ForAddress(Model.Config.DispatcherList[dispatcher]);
         }
 
-        public static void CheckDispatcherIsAlive(int index)
+        public static bool CheckDispatcherIsAlive(int index)
         {
             var channel = GrpcChannel.ForAddress(Model.Config.DispatcherList[index]);
             var client = new GodvilleServiceClient(channel);
-
             try
             {
                 client.Check(new Empty { }, deadline: DateTime.UtcNow.AddSeconds(5));
-                aliveDispatchers.Add(Model.Config.DispatcherList[index]);
+                return true;
             }
-            catch(Exception e)
-            {
-                // диспетчер недоступен, ничего не делаем
+            catch (Exception)
+            { // диспетчер недоступен, ничего не делаем
             }
+            return false;
         }
 
     }

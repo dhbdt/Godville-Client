@@ -41,11 +41,17 @@ namespace GodvilleClient
             }
         }
 
-        void ToggleDuelButtons(bool duelStarted)
+        void ToggleDuelState(bool duelStarted)
         {
             btnGood.SetPropertyThreadSafe(() => btnGood.Visible, duelStarted);
             btnBad.SetPropertyThreadSafe(() => btnBad.Visible, duelStarted);
             btnStartDuel.SetPropertyThreadSafe(() => btnStartDuel.Visible, !duelStarted);
+            if (!duelStarted)
+            {
+                lblEnemyHealth.SetPropertyThreadSafe(() => lblEnemyHealth.Text, "");
+                lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, "");
+                TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Clear());
+            }
         }
 
         void WriteToServerMsg()
@@ -81,7 +87,8 @@ namespace GodvilleClient
             }
 
             //заглушка
-            string serverAddress = "192.168.100.6:8024";
+            string serverAddress = "192.168.100.6:8888";
+
             var lines = serverAddress.Split(":");
             var ping = new Ping();
             var reply = ping.Send(lines[0], 3000); // 3 минуты тайм-аут
@@ -91,7 +98,7 @@ namespace GodvilleClient
                 return;
             }
             else
-                ToggleDuelButtons(true);
+                ToggleDuelState(true);
             
 
             int port = int.Parse(lines[1]);
@@ -109,16 +116,17 @@ namespace GodvilleClient
                     }
                     catch (IOException e) {
                         MessageBox.Show("Вашего противника унесла хищная птица. Дуэль завершена, теперь вы можете найти ее в статистике");
-                        ToggleDuelButtons(false);
-                        TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Clear());
+                        ToggleDuelState(false);
                         return;
                     }
                     if (input != null)
                     {
                         //Model.ClientMsg clientMsg = JsonSerializer.Deserialize<Model.ClientMsg>(input);
+                        // заглушка
                         Model.ClientMsg clientMsg = new Model.ClientMsg();
                         clientMsg.Type = 1;
                         clientMsg.IsEven = true;
+                        //
                         if (clientMsg.Type == 4)
                         {
                             lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, clientMsg.EnemyName);
@@ -142,9 +150,8 @@ namespace GodvilleClient
 
                         if (clientMsg.Type == 0)
                         {
-                            ToggleDuelButtons(false);
                             MessageBox.Show("Дуэль завершена, теперь вы можете найти ее в статистике");
-                            TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Clear());
+                            ToggleDuelState(false);
                             return;
                         }
                     }
