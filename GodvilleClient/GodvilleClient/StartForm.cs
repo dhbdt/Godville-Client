@@ -65,7 +65,7 @@ namespace GodvilleClient
             // запрашиваем у диспетчера Ip-адрес сервера, который будет с нами играть
             try
             {
-                //GrpcChannel channel = Connection.GetDispatcherChannel();
+                GrpcChannel channel = Connection.GetDispatcherChannel();
                 //var client = new GodvilleServiceClient(channel);
                 //string serverAddress = client.StartDuel(new ClientData {
                 //    Id = Program.Client.Id, 
@@ -76,6 +76,7 @@ namespace GodvilleClient
             {
                 //Выбранный диспетчер вдруг умер после проверки на активность
                 MessageBox.Show("Дуэль не может быть начата");
+                return;
             }
 
             //заглушка

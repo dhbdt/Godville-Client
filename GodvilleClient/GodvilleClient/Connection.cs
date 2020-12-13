@@ -5,29 +5,48 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static GodvilleClient.GodvilleService;
 
 namespace GodvilleClient
 {
     public class Connection
     {
-        readonly List<string> aliveDispatchers = new List<string>();
+        static readonly List<string> aliveDispatchers = new List<string>();
         public static GrpcChannel GetDispatcherChannel()
         {
+            //Task[] tasks = new Task[Model.Config.DispatcherList.Count];
             // найти живых и выбрать среди них случайного диспетчера 
-            //for (int i = 0; i < Model.Config.DispatcherList.Count; i++)
-            //{
-            //    //Thread t = new Thread(new ParameterizedThreadStart(CheckDispatcherIsAlive));
-            //    //t.Start(myParameterObject);
-            //    Thread thread = new Thread(() => CheckDispatcherIsAlive(i));
-            //    thread.Start();
-            //}
+            for (int i = 0; i < Model.Config.DispatcherList.Count; i++)
+            {
+                //Thread thread = new Thread(() => CheckDispatcherIsAlive(i));
+                //thread.Start();
+
+                //tasks[i] = new Task(() => CheckDispatcherIsAlive(i));
+                //tasks[i].Start();
+
+                CheckDispatcherIsAlive(i);
+
+
+            }
+            //Task.WaitAll(tasks);
 
             return GrpcChannel.ForAddress(Model.Config.DispatcherList[0]);
         }
 
         public static void CheckDispatcherIsAlive(int index)
         {
-            
+            var channel = GrpcChannel.ForAddress(Model.Config.DispatcherList[index]);
+            var client = new GodvilleServiceClient(channel);
+
+            try
+            {
+                client.Check(new Empty { }, deadline: DateTime.UtcNow.AddSeconds(5));
+                aliveDispatchers.Add(Model.Config.DispatcherList[index]);
+            }
+            catch(Exception e)
+            {
+                // диспетчер недоступен, ничего не делаем
+            }
         }
 
     }
