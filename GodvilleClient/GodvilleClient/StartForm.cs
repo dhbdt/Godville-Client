@@ -98,19 +98,25 @@ namespace GodvilleClient
                 NetworkStream networkStreamRead = tcpClient.GetStream();
                 string input;
                 StreamReader sr = new StreamReader(networkStreamRead);
-
-                //ping = new Ping();
-                //reply = ping.Send(lines[1], 3000); //3 минуты тайм-аут
-                //MessageBox.Show(reply.Status.ToString());
-
-
+                sr.BaseStream.ReadTimeout = 3000; // таймаут на отклик сервера - 3 минуты
                 while (true)
                 {
-                    input = sr.ReadLine();
+                    try
+                    {
+                        input = sr.ReadLine();
+                    }
+                    catch (IOException e) {
+                        MessageBox.Show("Вашего противника унесла хищная птица. Дуэль завершена, теперь вы можете найти ее в статистике");
+                        ToggleDuelButtons(false);
+                        TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Clear());
+                        return;
+                    }
                     if (input != null)
                     {
                         //Model.ClientMsg clientMsg = JsonSerializer.Deserialize<Model.ClientMsg>(input);
                         Model.ClientMsg clientMsg = new Model.ClientMsg();
+                        clientMsg.Type = 1;
+                        clientMsg.IsEven = true;
                         if (clientMsg.Type == 4)
                         {
                             lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, clientMsg.EnemyName);
