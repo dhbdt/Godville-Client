@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -11,7 +12,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static GodvilleClient.GodvilleService;
-using static System.Windows.Forms.ListView;
 
 namespace GodvilleClient
 {
@@ -27,10 +27,6 @@ namespace GodvilleClient
 
         private void btnStartDuel_Click(object sender, EventArgs e)
         {
-            btnStartDuel.Visible = false;
-            btnGood.Visible = true;
-            btnBad.Visible = true;
-
             try
             {
                 Thread readerThread = new Thread(new ThreadStart(ReadClientMsg));
@@ -45,9 +41,16 @@ namespace GodvilleClient
             }
         }
 
+        void ToggleDuelButtons(bool duelStarted)
+        {
+            btnGood.SetPropertyThreadSafe(() => btnGood.Visible, duelStarted);
+            btnBad.SetPropertyThreadSafe(() => btnBad.Visible, duelStarted);
+            btnStartDuel.SetPropertyThreadSafe(() => btnStartDuel.Visible, !duelStarted);
+        }
+
         void WriteToServerMsg()
         {
-            TcpListener tcpServer = new TcpListener(IPAddress.Parse("127.0.0.1"), 5000);
+            TcpListener tcpServer = new TcpListener(IPAddress.Parse("127.0.0.1"), 8007);
             tcpServer.Start();
             while (true)
             {
@@ -59,19 +62,35 @@ namespace GodvilleClient
 
         void ReadClientMsg()
         {
-            //GrpcChannel channel = Connection.GetDispatcherChannel();
-            //var client = new GodvilleServiceClient(channel);
-            //string serverAddress = client.StartDuel(new ClientData {
-            //    Id = Program.Client.Id, 
-            //    Nickname = Program.Client.Nickname,
-            //    HealthCount = Program.Client.CountLives
-            //}).Ip;
+            // запрашиваем у диспетчера Ip-адрес сервера, который будет с нами играть
+            try
+            {
+                //GrpcChannel channel = Connection.GetDispatcherChannel();
+                //var client = new GodvilleServiceClient(channel);
+                //string serverAddress = client.StartDuel(new ClientData {
+                //    Id = Program.Client.Id, 
+                //    Nickname = Program.Client.Nickname,
+                //    HealthCount = Program.Client.CountLives
+                //}).Ip;
+            } catch (Exception e)
+            {
+                //Выбранный диспетчер вдруг умер после проверки на активность
+                MessageBox.Show("Дуэль не может быть начата");
+            }
 
             //заглушка
             string serverAddress = "192.168.100.6:8888";
-            //заглушка
             var lines = serverAddress.Split(":");
-
+            var ping = new Ping();
+            var reply = ping.Send(lines[0], 3000); // 3 минуты тайм-аут
+            if (!reply.Status.ToString().Equals("Success"))
+            {
+                MessageBox.Show("Дуэль закончилась, не начавшись: ваш противник внезано провалился сквозь землю");
+                return;
+            }
+            else
+                ToggleDuelButtons(true);
+            
 
             int port = int.Parse(lines[1]);
             using (TcpClient tcpClient = new TcpClient(lines[0], port))
@@ -79,15 +98,19 @@ namespace GodvilleClient
                 NetworkStream networkStreamRead = tcpClient.GetStream();
                 string input;
                 StreamReader sr = new StreamReader(networkStreamRead);
+
+                //ping = new Ping();
+                //reply = ping.Send(lines[1], 3000); //3 минуты тайм-аут
+                //MessageBox.Show(reply.Status.ToString());
+
+
                 while (true)
                 {
                     input = sr.ReadLine();
                     if (input != null)
                     {
-                        Model.ClientMsg clientMsg = JsonSerializer.Deserialize<Model.ClientMsg>(input);
-                        //Model.ClientMsg clientMsg = new Model.ClientMsg();
-                        //clientMsg.Type = 4;
-                        //clientMsg.Phrase = "hello";
+                        //Model.ClientMsg clientMsg = JsonSerializer.Deserialize<Model.ClientMsg>(input);
+                        Model.ClientMsg clientMsg = new Model.ClientMsg();
                         if (clientMsg.Type == 4)
                         {
                             lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, clientMsg.EnemyName);
@@ -108,6 +131,14 @@ namespace GodvilleClient
                         TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Add(clientMsg.Phrase));
                         lblEnemyHealth.SetPropertyThreadSafe(() => lblEnemyHealth.Text, clientMsg.EnemyLives.ToString());
                         lblYourHealth.SetPropertyThreadSafe(() => lblYourHealth.Text, clientMsg.Lives.ToString());
+
+                        if (clientMsg.Type == 0)
+                        {
+                            ToggleDuelButtons(false);
+                            MessageBox.Show("Дуэль завершена, теперь вы можете найти ее в статистике");
+                            TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Clear());
+                            return;
+                        }
                     }
                 }
             }
@@ -155,8 +186,7 @@ namespace GodvilleClient
                 string input;
                 StreamReader sr = new StreamReader(networkStreamRead);
 
-                input = sr.ReadLine();
-                if (input != null)
+                while ((input = sr.ReadLine()) != null)
                 {
                     // заполнить данные для StatisticForm
                 }
