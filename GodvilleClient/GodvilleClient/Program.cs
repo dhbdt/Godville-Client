@@ -50,6 +50,7 @@ namespace GodvilleClient
                     catch (Exception e)
                     {
                         Logger.AddErrorMessage(e.Message);
+                        MessageBox.Show("Что-то пошло не так");
                         return;
                     }
                     
@@ -71,20 +72,21 @@ namespace GodvilleClient
                     RegisterForm rf = new RegisterForm(regData);
                     if (rf.ShowDialog() == DialogResult.OK)
                     {
-                        using var channel = Connection.GetDispatcherChannel();
-                        var serviceClient = new GodvilleServiceClient(channel);
-
                         UserRegOutput userRegOutput;
                         try
                         {
+                            using var channel = Connection.GetDispatcherChannel();
+                            var serviceClient = new GodvilleServiceClient(channel);
                             userRegOutput = serviceClient.Register(
                                 new RegisterData
                                 {
                                     LoginData = new LoginData { Login = regData.Login, Password = regData.Password},
-                                    Nickname = regData.Nickname
+                                    Nickname = regData.Nickname,
+                                    Heroname = regData.HeroName
                                 });
                         } catch(Exception e)
                         {
+                            MessageBox.Show("Что-то пошло не так");
                             Logger.AddErrorMessage(e.Message);
                             return;
                         }
