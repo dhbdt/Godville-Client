@@ -19,7 +19,6 @@ namespace GodvilleClient
 {
     public partial class StartForm : Form
     {
-        NetworkStream networkStreamWrite;
         public StartForm()
         {
             InitializeComponent();
@@ -75,7 +74,7 @@ namespace GodvilleClient
 
             var lines = serverIp.Split(":");
             var ping = new Ping();
-            var reply = ping.Send(lines[0], 1000); // 1 минута тайм-аут
+            var reply = ping.Send(lines[0], 200); // 0,2 минуты тайм-аут
             if (!reply.Status.ToString().Equals("Success"))
             {
                 MessageBox.Show("Дуэль закончилась, не начавшись: ваш противник внезано провалился сквозь землю");
@@ -94,10 +93,11 @@ namespace GodvilleClient
             {
                 tcpClient.Connect(server, port);
                 NetworkStream networkStream = tcpClient.GetStream();
-
+                WriteStream.WriteNetworkStream = tcpClient.GetStream();
                 BinaryReader sr = new BinaryReader(networkStream);
                 BinaryWriter sw = new BinaryWriter(networkStream);
                 sr.BaseStream.ReadTimeout = 200; // таймаут на отклик сервера - 0,2 минуты
+                sw.Write(Program.Client.Id); // послать серверу свой id и начать взаимодействие
                 while (true)
                 {
                     Model.ClientMsg clientMsg;
@@ -123,8 +123,8 @@ namespace GodvilleClient
                         //clientMsg.EnemyLives = 89;
                         //clientMsg.IsEven = true;
                         //clientMsg.Phrase = "ФРАЗАФРАЗАФРАЗА";
-
                         //
+
                         if (clientMsg.Type == 4)
                         {
                             lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, clientMsg.EnemyName);
@@ -160,20 +160,20 @@ namespace GodvilleClient
 
         private void btnGood_Click(object sender, EventArgs e)
         {
-            if (networkStreamWrite == null)
+            if (WriteStream.WriteNetworkStream == null)
                 return;
             string response = "1";
             byte[] data = Encoding.UTF8.GetBytes(response);
-            networkStreamWrite.Write(data, 0, data.Length); // сказать серверу, что клиент сделал хорошо
+            WriteStream.WriteNetworkStream.Write(data, 0, data.Length); // сказать серверу, что клиент сделал хорошо
         }
 
         private void btnBad_Click(object sender, EventArgs e)
         {
-            if (networkStreamWrite == null)
+            if (WriteStream.WriteNetworkStream == null)
                 return;
             string response = "0";
             byte[] data = Encoding.UTF8.GetBytes(response);
-            networkStreamWrite.Write(data, 0, data.Length); // сказать серверу, что клиент сделал плохо
+            WriteStream.WriteNetworkStream.Write(data, 0, data.Length); // сказать серверу, что клиент сделал плохо
         }
 
         private void btnGetStat_Click(object sender, EventArgs e)
@@ -218,9 +218,17 @@ namespace GodvilleClient
 
         private void StartForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (networkStreamWrite == null)
+            if (WriteStream.WriteNetworkStream == null)
                 return;
-            networkStreamWrite.Close();
+            WriteStream.WriteNetworkStream.Close();
         }
     }
+
+    class WriteStream
+    {
+        public WriteStream()
+        {        }
+        public static NetworkStream WriteNetworkStream { get; set; }
+    }
 }
+
