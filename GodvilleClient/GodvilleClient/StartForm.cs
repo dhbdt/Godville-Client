@@ -1,4 +1,5 @@
 ﻿using Grpc.Net.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -73,87 +74,78 @@ namespace GodvilleClient
             serverIp = "127.0.0.1:8006";
 
             var lines = serverIp.Split(":");
-            //var ping = new Ping();
-            //var reply = ping.Send(lines[0], 200); // 0,2 минуты тайм-аут
-            //if (!reply.Status.ToString().Equals("Success"))
-            //{
-            //    MessageBox.Show("Дуэль закончилась, не начавшись: ваш противник внезано провалился сквозь землю");
-            //    return;
-            //}
-            //else
-            //    ToggleDuelState(true);
-
-
             int port = int.Parse(lines[1]);
             string server = lines[1];
 
-            IFormatter formatter = new BinaryFormatter();
-
-            using (TcpClient tcpClient = new TcpClient(lines[0], port))
-            {
-                NetworkStream networkStream = tcpClient.GetStream();
-                WriteStream.WriteNetworkStream = tcpClient.GetStream();
-                BinaryReader sr = new BinaryReader(networkStream);
-                BinaryWriter sw = new BinaryWriter(networkStream);
-                sr.BaseStream.ReadTimeout = 3000; // таймаут на отклик сервера - 0,2 минуты
-                sw.Write(Program.Client.Id); // послать серверу свой id и начать взаимодействие
-                sw.Flush();
-                while (true)
+            try {
+                using (TcpClient tcpClient = new TcpClient(lines[0], port))
                 {
-                    Model.ClientMsg clientMsg;
-                    try
-                    {
-                        MemoryStream ms = new MemoryStream();
-                        networkStream.CopyTo(ms);
-                        ms.ToArray();
-                        clientMsg = (Model.ClientMsg) formatter.Deserialize(ms);
-                    }
-                    catch (IOException e)
-                    {
-                        MessageBox.Show("Вашего противника унесла хищная птица. Дуэль завершена, теперь вы можете найти ее в статистике");
-                        Logger.AddErrorMessage(e.Message);
-                        ToggleDuelState(false);
-                        return;
-                    }
-                    if (clientMsg != null)
-                    {
-                        // заглушка
-                        //clientMsg.Type = 4;
-                        //clientMsg.EnemyName = "bugurt";
-                        //clientMsg.EnemyLives = 89;
-                        //clientMsg.IsEven = true;
-                        //clientMsg.Phrase = "ФРАЗАФРАЗАФРАЗА";
-                        //
+                    NetworkStream networkStream = tcpClient.GetStream();
+                    StreamReader sr = new StreamReader(networkStream);
+                    StreamWriter sw = new StreamWriter(networkStream);
+                    sr.BaseStream.ReadTimeout = 20*1000;
+                    sw.WriteLine(Program.Client.Id.ToString());
+                    sw.Flush();
 
-                        if (clientMsg.Type == 4)
+                    string input;
+                    ToggleDuelState(true);
+                    while (true)
+                    {
+                        Model.ClientMsg clientMsg;
+                        try
                         {
-                            lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, clientMsg.EnemyName);
+                            if ((input = sr.ReadLine()) != null)
+                            {
+                                clientMsg = JsonConvert.DeserializeObject<Model.ClientMsg>(input);
+                                Logger.AddErrorMessage(input);
+                            }
+                            else
+                                continue;
                         }
-                        if (clientMsg.Glas != -1)
+                        catch (IOException e)
                         {
-                            string glasMsg = clientMsg.Glas == 0 ?
-                                "Противник сделал плохо. Ваше здоровье уменьшилось" :
-                                "Противник сделал хорошо. Его герой вылечился";
-                            TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Add(glasMsg));
-                            TestFormControlHelper.ControlInvoke(
-                                lvDuelHistory,
-                                () => lvDuelHistory.Items[lvDuelHistory.Items.Count - 1].BackColor = Color.Cyan);
-                        }
-                        btnGood.SetPropertyThreadSafe(() => btnGood.Enabled, clientMsg.IsEven);
-                        btnBad.SetPropertyThreadSafe(() => btnBad.Enabled, clientMsg.IsEven);
-
-                        TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Add(clientMsg.Phrase));
-                        lblEnemyHealth.SetPropertyThreadSafe(() => lblEnemyHealth.Text, clientMsg.EnemyLives.ToString());
-                        lblYourHealth.SetPropertyThreadSafe(() => lblYourHealth.Text, clientMsg.Lives.ToString());
-
-                        if (clientMsg.Type == 0)
-                        {
-                            MessageBox.Show("Дуэль завершена, теперь вы можете найти ее в статистике");
+                            MessageBox.Show("Вашего противника унесла хищная птица. Дуэль завершена, теперь вы можете найти ее в статистике");
+                            Logger.AddErrorMessage(e.Message);
                             ToggleDuelState(false);
                             return;
                         }
+                        if (clientMsg != null)
+                        {
+                            if (clientMsg.Type == 4)
+                            {
+                                lblEnemyName.SetPropertyThreadSafe(() => lblEnemyName.Text, clientMsg.EnemyName);
+                            }
+                            if (clientMsg.Glas != -1)
+                            {
+                                string glasMsg = clientMsg.Glas == 0 ?
+                                    "Противник сделал плохо. Ваше здоровье уменьшилось" :
+                                    "Противник сделал хорошо. Его герой вылечился";
+                                TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Add(glasMsg));
+                                TestFormControlHelper.ControlInvoke(
+                                    lvDuelHistory,
+                                    () => lvDuelHistory.Items[lvDuelHistory.Items.Count - 1].BackColor = Color.Cyan);
+                            }
+                            btnGood.SetPropertyThreadSafe(() => btnGood.Enabled, clientMsg.IsEven);
+                            btnBad.SetPropertyThreadSafe(() => btnBad.Enabled, clientMsg.IsEven);
+
+                            TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Add(clientMsg.Phrase));
+                            lblEnemyHealth.SetPropertyThreadSafe(() => lblEnemyHealth.Text, clientMsg.EnemyLives.ToString());
+                            lblYourHealth.SetPropertyThreadSafe(() => lblYourHealth.Text, clientMsg.Lives.ToString());
+
+                            if (clientMsg.Type == 0)
+                            {
+                                MessageBox.Show("Дуэль завершена, теперь вы можете найти ее в статистике");
+                                ToggleDuelState(false);
+                                return;
+                            }
+                        }
                     }
                 }
+            } catch (Exception e)
+            {
+                MessageBox.Show("Дуэль закончилась, не начавшись: ваш противник внезано провалился сквозь землю");
+                Logger.AddErrorMessage(e.Message);
+                return;
             }
         }
 
