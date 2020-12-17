@@ -205,6 +205,7 @@ namespace GodvilleClient
                 var channel = Connection.GetDispatcherChannel();
                 var client = new GodvilleServiceClient(channel);
                 client.Logout(new ClientId { Id = Program.Client.Id });
+                Program.Client.ClearClientData();
             }
             catch (Exception ex)
             {
