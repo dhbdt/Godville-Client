@@ -20,18 +20,33 @@ namespace GodvilleClient
 {
     public partial class StartForm : Form
     {
+        Thread readerThread;
         public StartForm()
         {
             InitializeComponent();
+            lvDuelHistorySetVerticalScroll();
             lblHeroName.Text = Program.Client.HeroName;
             lblYourHealth.Text = Program.Client.CountLives.ToString();
+        }
+
+        void lvDuelHistorySetVerticalScroll()
+        {
+            lvDuelHistory.Scrollable = true;
+            lvDuelHistory.View = View.Details;
+            ColumnHeader header = new ColumnHeader();
+            header.Text = "";
+            header.Name = "col1";
+            header.Width = lvDuelHistory.Width;
+            lvDuelHistory.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvDuelHistory.Columns.Add(header);
+
         }
 
         private void btnStartDuel_Click(object sender, EventArgs e)
         {
             try
             {
-                Thread readerThread = new Thread(new ThreadStart(ReadClientMsg));
+                readerThread = new Thread(new ThreadStart(ReadClientMsg));
                 readerThread.Start();
             }
             catch (Exception ex)
@@ -45,6 +60,7 @@ namespace GodvilleClient
             btnGood.SetPropertyThreadSafe(() => btnGood.Visible, duelStarted);
             btnBad.SetPropertyThreadSafe(() => btnBad.Visible, duelStarted);
             btnStartDuel.SetPropertyThreadSafe(() => btnStartDuel.Visible, !duelStarted);
+            btnGetStat.SetPropertyThreadSafe(() => btnGetStat.Enabled, !duelStarted);
             if (!duelStarted)
             {
                 lblEnemyHealth.SetPropertyThreadSafe(() => lblEnemyHealth.Text, "");
@@ -53,6 +69,11 @@ namespace GodvilleClient
             }
         }
 
+        void ToggleMyHod(bool isMyHod)
+        {
+            btnGood.SetPropertyThreadSafe(() => btnGood.Enabled, isMyHod);
+            btnBad.SetPropertyThreadSafe(() => btnBad.Enabled, isMyHod);
+        }
         void ReadClientMsg()
         {
             string serverIp;
@@ -97,8 +118,7 @@ namespace GodvilleClient
                             if ((input = sr.ReadLine()) != null)
                             {
                                 clientMsg = JsonConvert.DeserializeObject<Model.ClientMsg>(input);
-                                Logger.AddErrorMessage(input);
-                            }
+                            }   
                             else
                                 continue;
                         }
@@ -125,13 +145,11 @@ namespace GodvilleClient
                                     lvDuelHistory,
                                     () => lvDuelHistory.Items[lvDuelHistory.Items.Count - 1].BackColor = Color.Cyan);
                             }
-                            btnGood.SetPropertyThreadSafe(() => btnGood.Enabled, clientMsg.IsEven);
-                            btnBad.SetPropertyThreadSafe(() => btnBad.Enabled, clientMsg.IsEven);
 
                             TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.Items.Add(clientMsg.Phrase));
+                            TestFormControlHelper.ControlInvoke(lvDuelHistory, () => lvDuelHistory.EnsureVisible(lvDuelHistory.Items.Count - 1));
                             lblEnemyHealth.SetPropertyThreadSafe(() => lblEnemyHealth.Text, clientMsg.EnemyLives.ToString());
                             lblYourHealth.SetPropertyThreadSafe(() => lblYourHealth.Text, clientMsg.Lives.ToString());
-
                             if (clientMsg.Type == 0)
                             {
                                 MessageBox.Show("Дуэль завершена, теперь вы можете найти ее в статистике");
@@ -214,6 +232,14 @@ namespace GodvilleClient
             if (WriteStream.WriteNetworkStream == null)
                 return;
             WriteStream.WriteNetworkStream.Close();
+            if (readerThread != null)
+                readerThread.Interrupt();
+        }
+
+        private void StartForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (readerThread != null)
+                readerThread.Interrupt();
         }
     }
 
